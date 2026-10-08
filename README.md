@@ -4,6 +4,7 @@ A single Flutter app that solves the four interview tasks. The home screen lists
 the tasks and each one opens on its own screen.
 
 | Task | What was asked | Where it lives |
+| ---- | -------------- | -------------- |
 | 1 | Install Android Studio with Flutter support | Flutter 3.47 stable + Android SDK 36 + JDK 17; this project builds and runs on an emulator |
 | 2 | "Hello World" app | [`lib/screens/task2_hello_world.dart`](lib/screens/task2_hello_world.dart) |
 | 3 | Label + EditText + Button; the button shows the text on the label | [`lib/screens/task3_label_edittext_button.dart`](lib/screens/task3_label_edittext_button.dart) |
