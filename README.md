@@ -72,6 +72,12 @@ that holds the token may update the label, and then it hands the token to the
 other one. The full explanation is in the
 [Task 4 README](task4_multithreading/README.md#how-the-synchronization-works).
 
+## AI usage
+
+The apps were built with an AI coding agent, Claude Code.
+[AI_USAGE.md](AI_USAGE.md) describes how it was used, lists the prompts and
+explains how the result was checked.
+
 ## Repository structure
 
 ```
@@ -80,6 +86,7 @@ task2_hello_world/      Task 2: Hello World
 task3_ui_layout/        Task 3: label, text field and button
 task4_multithreading/   Task 4: two isolates counting in turns
 docs/screenshots/       screenshots of the three apps
+AI_USAGE.md             how AI was used to build the apps
 ```
 
 ## Screenshots
