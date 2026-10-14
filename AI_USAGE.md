@@ -140,6 +140,24 @@ The design is explained in the
   before committing it. The screenshots in the README come from those runs.
 - I then installed the three APKs on the emulator and tested each app by hand.
 
+## Task 4, spec-driven version
+
+After the second review, Task 4 was redone from scratch in
+[`task4_spec_driven/`](task4_spec_driven/), again with Claude Code (Claude
+Opus 5.5, in VS Code). This time each phase produced its own document while
+the work happened, instead of a summary written afterwards:
+
+| Phase | Document | Who |
+| --- | --- | --- |
+| Functional specification | [`01-functional-spec.md`](task4_spec_driven/docs/01-functional-spec.md) | Claude Code drafted it from the task; I reviewed and approved it. |
+| Technical specification | [`02-technical-spec.md`](task4_spec_driven/docs/02-technical-spec.md) | Claude Code drafted it from the approved functional specification; I reviewed and approved it. |
+| Implementation | [`03-implementation.md`](task4_spec_driven/docs/03-implementation.md) | Claude Code wrote the plan, then the code and tests from the technical specification, and recorded the results of each step. |
+
+I raised that the task asks for threads rather than isolates, so this version
+uses two real Kotlin threads; the technical specification records the
+alternatives and the decision. Each document was committed after it was
+approved, so the Git history shows the order of the phases.
+
 ---
 
 This document was written with Claude Code after the work was finished, from

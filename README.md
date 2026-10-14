@@ -10,10 +10,14 @@ is ready to install.
 | 2. Hello World | Hello World | [`task2_hello_world/`](task2_hello_world/) | [`task2_hello_world.apk`](apk/task2_hello_world.apk) |
 | 3. Label, EditText and button | UI Layout | [`task3_ui_layout/`](task3_ui_layout/) | [`task3_ui_layout.apk`](apk/task3_ui_layout.apk) |
 | 4. Two synchronized threads | Multithreading | [`task4_multithreading/`](task4_multithreading/) | [`task4_multithreading.apk`](apk/task4_multithreading.apk) |
+| 4. Two synchronized threads, spec-driven version | Odd/Even Threads | [`task4_spec_driven/`](task4_spec_driven/) | [`task4_spec_driven.apk`](apk/task4_spec_driven.apk) |
+
+Task 4 was later redone from scratch with a spec-driven process, using real
+Kotlin threads. See [Task 4, spec-driven version](#task-4-spec-driven-version).
 
 ## Installing the APKs
 
-Each app has its own application ID, so the three apps can be installed side by
+Each app has its own application ID, so all the apps can be installed side by
 side.
 
 - **On an Android phone:** download the APK from the [`apk/`](apk/) folder, open
@@ -24,6 +28,7 @@ side.
   adb install apk/task2_hello_world.apk
   adb install apk/task3_ui_layout.apk
   adb install apk/task4_multithreading.apk
+  adb install apk/task4_spec_driven.apk
   ```
 
 The APKs are release builds signed with Flutter's default debug key. They are
@@ -55,8 +60,10 @@ flutter run
 
 ## Tests
 
-Run `flutter test` inside each app folder. There are six tests in total and all
-of them pass. `flutter analyze` reports no issues in any of the three apps.
+Run `flutter test` inside each app folder. The first three apps have six tests
+in total and all of them pass. `flutter analyze` reports no issues in any of
+them. The spec-driven version has its own tests, described in its
+[README](task4_spec_driven/README.md#test).
 
 | App | What the tests check |
 | --- | --- |
@@ -72,6 +79,20 @@ that holds the token may update the label, and then it hands the token to the
 other one. The full explanation is in the
 [Task 4 README](task4_multithreading/README.md#how-the-synchronization-works).
 
+## Task 4, spec-driven version
+
+The multithreading task redone from scratch, one phase at a time. Each phase
+produced a document that was approved before the next phase started:
+
+1. [Functional specification](task4_spec_driven/docs/01-functional-spec.md)
+2. [Technical specification](task4_spec_driven/docs/02-technical-spec.md)
+3. [Implementation plan and record](task4_spec_driven/docs/03-implementation.md)
+
+This version uses two real Android threads written in Kotlin, synchronized
+with a `ReentrantLock` and a `Condition`, and a Flutter screen that receives
+each number through an `EventChannel`. It has 16 Dart tests and 6 JUnit tests.
+See its [README](task4_spec_driven/README.md).
+
 ## AI usage
 
 The apps were built with an AI coding agent, Claude Code.
@@ -85,7 +106,8 @@ apk/                    release APKs, one per app
 task2_hello_world/      Task 2: Hello World
 task3_ui_layout/        Task 3: label, text field and button
 task4_multithreading/   Task 4: two isolates counting in turns
-docs/screenshots/       screenshots of the three apps
+task4_spec_driven/      Task 4, spec-driven: two Kotlin threads, with its specs in docs/
+docs/screenshots/       screenshots of the first three apps
 AI_USAGE.md             how AI was used to build the apps
 ```
 
