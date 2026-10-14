@@ -66,7 +66,8 @@ flowchart TB
    code to it.
 9. **Act on feedback.** After the review feedback, it split the project into
    three standalone apps, built and checked one APK per app, retook the
-   screenshots and wrote this document.
+   screenshots and wrote this document. I then installed the three APKs and
+   tested each app myself.
 
 ## Tasks and subtasks
 
@@ -122,7 +123,7 @@ The design is explained in the
 
 | Subtask | Who | How |
 | --- | --- | --- |
-| Test every task manually | Me | On the emulator, using the first version (a single app) |
+| Test every task manually | Me | On the emulator: first the single-app version, then each of the three APKs |
 | Review the code and the project structure | Me | Code, naming and folder layout |
 | Translate UI text, comments and tests into English | Claude Code | At my request, because the code is reviewed in English |
 | Clean up generated files and write the README | Claude Code | README with screenshots from the emulator |
@@ -135,8 +136,9 @@ The design is explained in the
 
 - `flutter analyze` reports no issues in any of the three apps.
 - `flutter test` passes in all three apps (six tests in total).
-- Each release APK was installed and run on an Android 15 emulator before it
-  was committed. The screenshots in the README come from those runs.
+- Claude Code installed and ran each release APK on an Android 15 emulator
+  before committing it. The screenshots in the README come from those runs.
+- I then installed the three APKs on the emulator and tested each app by hand.
 
 ---
 
