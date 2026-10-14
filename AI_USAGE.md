@@ -1,126 +1,145 @@
-# AI Usage
+# AI Usage: How These Apps Were Built
 
 I built these apps with **Claude Code**, Anthropic's AI coding agent. This
-document explains how I used it, what it produced, and what I checked myself.
+document describes the workflow I followed, how each task was broken down into
+subtasks, and which parts Claude Code did and which parts I did.
 
-## Summary
+## At a glance
 
-- **Tool:** Claude Code was the only AI tool I used. I ran it first in the
-  Claude desktop app (model Claude Opus 5) and later in the VS Code extension
-  (model Claude Opus 5.5).
-- **What the AI did:** it set up the development environment (except one
-  manual step, see [Task 1](#task-1-environment)), wrote all of the code, tests
-  and documentation, built the APKs and captured the screenshots.
-- **What I did:** I directed the work through the prompts below, tested the
-  apps on the emulator and reviewed the code. I did not write or edit code by
-  hand.
+- **AI tool:** Claude Code was the only AI tool I used. I ran it in the Claude
+  desktop app (Claude Opus 5) to build the apps on 8 October 2026, and in the
+  VS Code extension (Claude Opus 5.5) to publish them and act on the review
+  feedback.
+- **Claude Code:** set up the development environment (apart from one manual
+  step, see [Task 1](#task-1-install-android-studio-with-flutter-support)),
+  wrote all of the code, tests and documentation, built the APKs and checked
+  them on an emulator.
+- **Me:** I directed the work, decided on scope and delivery, tested every task
+  manually and reviewed the code. I can explain how it works, including the
+  Task 4 synchronization. I did not write or edit code by hand.
 
-## Why there are no prompt files
+## Workflow
 
-I did not prepare specification or prompt files before starting. I worked with
-Claude Code as a conversation, so my instructions were chat messages. The
-prompts that produced the apps are listed below, taken from the session logs.
-I wrote them in Portuguese, so they are translated into English here.
+```mermaid
+flowchart TB
+    subgraph build ["Build: Claude Code"]
+        direction LR
+        A[Assess] --> B[Plan subtasks] --> C[Set up environment] --> D[Build tasks 2-4] --> E[Verify on emulator]
+    end
+    subgraph review ["Review: me"]
+        direction LR
+        F[Manual test] --> G[Code review]
+    end
+    subgraph deliver ["Deliver: Claude Code"]
+        direction LR
+        H[Refine and publish] --> I[Act on feedback]
+    end
+    build --> review --> deliver
+```
 
-## Timeline
+1. **Assess.** I gave Claude Code the four tasks and asked it to separate what
+   it could do on its own from what needed me. The one set-up step it could
+   not do from the command line was installing the Flutter and Dart plugins
+   inside Android Studio, which needs the IDE's interface.
+2. **Plan subtasks.** Claude Code broke the work into steps and tracked them in
+   a to-do list as it worked. The plan changed once: it first meant to show the
+   apps in a web browser, but Flutter Web cannot run `dart:isolate`, so it used
+   an Android emulator instead.
+3. **Set up the environment.** Task 1, done from the command line. When
+   `flutter doctor` asked for Android SDK platform 36, that was installed too.
+4. **Build tasks 2 to 4.** In the order of the assignment, each one with
+   automated tests. The first version was a single app with one screen per
+   task.
+5. **Verify on the emulator.** Claude Code ran `flutter analyze` and
+   `flutter test`, built the APK, installed it on the emulator with `adb`,
+   drove each screen with `adb` input commands and checked the screenshots. The
+   first release build failed because of the 260-character path limit on
+   Windows, so it rebuilt the APK from a shorter folder.
+6. **Manual test.** I tested each task on the emulator myself.
+7. **Code review.** I reviewed the code and the project structure. Because the
+   code is reviewed in English, I asked for English throughout and a simple
+   structure.
+8. **Refine and publish.** Claude Code translated the remaining Portuguese
+   text, cleaned up generated files, wrote the README and rebuilt the APK. I
+   created the repository on GitHub, and Claude Code committed and pushed the
+   code to it.
+9. **Act on feedback.** After the review feedback, it split the project into
+   three standalone apps, built and checked one APK per app, retook the
+   screenshots and wrote this document.
 
-| Date | Where | Work |
-| ---- | ----- | ---- |
-| 8 Oct 2026 | Claude desktop app | Environment set-up, first version (a single app), tests, screenshots, English review |
-| 8 Oct 2026 | VS Code | Git repository and push to GitHub |
-| 14 Oct 2026 | VS Code | Split into three apps, release APKs, this document |
+## Tasks and subtasks
 
-## Prompts
+Each table lists the subtasks carried out for one task and who did them.
 
-### Session 1: building the apps (8 October 2026)
+### Task 1: Install Android Studio with Flutter support
 
-1. > I had an interview and received a test to do. Tell me whether you can do
-   > everything on your own or whether I need to do something manually.
+| # | Subtask | Who | How |
+| --- | --- | --- | --- |
+| 1.1 | Check what the machine already had | Claude Code | Looked for Git, winget, existing SDKs and free disk space |
+| 1.2 | Install JDK 17 and Android Studio | Claude Code | `winget` |
+| 1.3 | Install the Flutter SDK | Claude Code | `git clone` of the stable channel |
+| 1.4 | Install the Android SDK and accept its licenses | Claude Code | `sdkmanager`: platform-tools, platform 36, build-tools 36.0.0 |
+| 1.5 | Connect Flutter to the SDK and JDK, and check the set-up | Claude Code | `flutter config`, `flutter doctor` |
+| 1.6 | Create an Android emulator | Claude Code | Android 15 system image, `avdmanager` |
 
-   In the same message I pasted the email with the four tasks.
+Still to do: installing the Flutter and Dart plugins inside Android Studio. This
+step needs the IDE's interface, so Claude Code left it to me.
 
-2. > Go ahead with everything you can do on your own, in the order of the
-   > requested steps. At the end I want to be able to see the result, even if
-   > you have to explain step by step how to test it and see how it works.
+### Task 2: Hello World
 
-3. > I tested it manually on the emulator and I think everything is fine. I
-   > just need you to put everything in a folder on the Desktop so I can open
-   > it in Cursor and check all the code and its organization. Then tell me how
-   > I can send the result, since the email said nothing about how to deliver
-   > it.
+| # | Subtask | Who | How |
+| --- | --- | --- | --- |
+| 2.1 | Create the Flutter project (Android only) | Claude Code | `flutter create` |
+| 2.2 | Build the screen: an app bar and a centered "Hello World" | Claude Code | [`lib/main.dart`](task2_hello_world/lib/main.dart) |
+| 2.3 | Test that "Hello World" is displayed | Claude Code | One widget test |
+| 2.4 | Build the APK and check it on the emulator | Claude Code | Release build, `adb`, screenshot |
 
-4. > Don't move on to anything else. I want you to check that the content is in
-   > English, because Alon will review the code, and that it is well written,
-   > with well-organized folders and files. Do a review and keep it simple,
-   > functional and error-free.
+### Task 3: Label, EditText and button
 
-### Session 2: repository and follow-ups (8 to 14 October 2026)
+| # | Subtask | Who | How |
+| --- | --- | --- | --- |
+| 3.1 | Map the Android widgets named in the task to Flutter | Claude Code | `EditText` → `TextField`, label (`TextView`) → `Text` |
+| 3.2 | Lay out the label, the text field and the button | Claude Code | A `Column` in [`lib/main.dart`](task3_ui_layout/lib/main.dart) |
+| 3.3 | Show the text on the label when the button is pressed | Claude Code | `TextEditingController` and `setState`; the keyboard's done key does the same |
+| 3.4 | Handle an empty field and close the keyboard | Claude Code | A hint replaces the empty text; `unfocus()` |
+| 3.5 | Test both behaviors | Claude Code | Two widget tests |
+| 3.6 | Build the APK and check it on the emulator | Claude Code | Typed "Hello Alon!" with `adb`, pressed the button, took screenshots |
 
-Here I used Claude Code for the repository and the follow-up work. These
-requests are summarized rather than quoted:
+### Task 4: Two synchronized threads
 
-- Create the Git repository and push it to GitHub.
-- Fix the table formatting in the README.
-- After the review feedback: split the project into three apps, add the APKs
-  to the repository and write this document.
+| # | Subtask | Who | How |
+| --- | --- | --- | --- |
+| 4.1 | Choose the concurrency model | Claude Code | Dart isolates, since Dart has no threads that share memory |
+| 4.2 | Design the synchronization | Claude Code | A single turn token passed between the two isolates |
+| 4.3 | Implement the two workers and connect them | Claude Code | `Isolate.spawn`, ports and a short handshake in [`lib/counter_isolates.dart`](task4_multithreading/lib/counter_isolates.dart) |
+| 4.4 | Build the screen | Claude Code | Label colored by isolate, start and stop buttons, produced sequence |
+| 4.5 | Test the order and the stop | Claude Code | Exactly 1 to 20 in order, each number from the right isolate; `stop()` interrupts the count; the screen starts idle |
+| 4.6 | Build the APK and check it on the emulator | Claude Code | Screenshots while idle, counting and finished |
 
-## What Claude Code did
+The design is explained in the
+[Task 4 README](task4_multithreading/README.md#how-the-synchronization-works).
 
-### Task 1: environment
+### Review and delivery
 
-Claude Code set up the toolchain from the command line:
-
-- installed JDK 17 (Microsoft OpenJDK) and Android Studio with `winget`;
-- cloned the Flutter SDK (stable channel);
-- installed Android SDK platform 36, build-tools 36.0.0, the emulator and an
-  Android 15 system image with `sdkmanager`, and created an emulator with
-  `avdmanager`;
-- ran `flutter doctor` until the Android toolchain was ready.
-
-Installing the Flutter and Dart plugins inside Android Studio needs the IDE's
-graphical interface, so Claude Code left that step to me.
-
-### Tasks 2 to 4: the apps
-
-- It wrote the screens and the tests. The first version was a single app with
-  one screen per task. After the review feedback it split that app into the
-  three apps in this repository, without changing how the screens behave.
-- For Task 4 it chose two Dart isolates that pass a single turn token, because
-  Dart has no threads that share memory. The design is explained in the
-  [Task 4 README](task4_multithreading/README.md#how-the-synchronization-works).
-- It wrote the READMEs, built the release APKs, installed them on the emulator
-  through `adb` and captured the screenshots.
-
-Problems it hit and fixed along the way:
-
-- `flutter doctor` asked for Android SDK 36, so it installed it.
-- Flutter Web cannot compile `dart:isolate`, so it removed the web target. The
-  apps are Android-only.
-- The first release build failed because of the 260-character path limit on
-  Windows, so it rebuilt the APK from a shorter folder.
-- Parts of the first version (UI text, code comments and a testing guide) were
-  in Portuguese. At my request it translated everything into English.
-
-## What I did
-
-- I directed the work through the prompts above and made the calls on scope
-  and delivery: English throughout, a simple structure, and three separate
-  apps after the review feedback.
-- I tested each task manually on the emulator. I tested the first version (one
-  app with a screen per task); the split into three apps did not change how the
-  screens behave.
-- I reviewed the code and the project structure, and I can explain how it
-  works, including the Task 4 synchronization.
-- I did not write or edit code by hand.
+| Subtask | Who | How |
+| --- | --- | --- |
+| Test every task manually | Me | On the emulator, using the first version (a single app) |
+| Review the code and the project structure | Me | Code, naming and folder layout |
+| Translate UI text, comments and tests into English | Claude Code | At my request, because the code is reviewed in English |
+| Clean up generated files and write the README | Claude Code | README with screenshots from the emulator |
+| Create the GitHub repository | Me | On my GitHub account |
+| Commit and push the code | Claude Code | `git init`, commit and push to that repository |
+| Split into three standalone apps and add the APKs | Claude Code | After the review feedback; each APK checked again on the emulator |
+| Write this document | Claude Code | From the session history and my account of what I did |
 
 ## How the result was checked
 
 - `flutter analyze` reports no issues in any of the three apps.
 - `flutter test` passes in all three apps (six tests in total).
-- Each release APK was installed on an Android 15 emulator and run before it
+- Each release APK was installed and run on an Android 15 emulator before it
   was committed. The screenshots in the README come from those runs.
 
 ---
 
-This document was also written with Claude Code, from the session logs and my
-answers about what I did myself.
+This document was written with Claude Code after the work was finished, from
+the session history and my own account of what I did.

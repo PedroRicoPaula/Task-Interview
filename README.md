@@ -75,8 +75,8 @@ other one. The full explanation is in the
 ## AI usage
 
 The apps were built with an AI coding agent, Claude Code.
-[AI_USAGE.md](AI_USAGE.md) describes how it was used, lists the prompts and
-explains how the result was checked.
+[AI_USAGE.md](AI_USAGE.md) describes the workflow, breaks each task down into
+subtasks with who did them, and explains how the result was checked.
 
 ## Repository structure
 
