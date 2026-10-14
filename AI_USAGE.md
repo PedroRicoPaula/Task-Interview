@@ -156,7 +156,8 @@ the work happened, instead of a summary written afterwards:
 I raised that the task asks for threads rather than isolates, so this version
 uses two real Kotlin threads; the technical specification records the
 alternatives and the decision. Each document was committed after it was
-approved, so the Git history shows the order of the phases.
+approved, so the Git history shows the order of the phases. After the build, I
+installed the APK on the emulator and tested the app myself.
 
 ---
 

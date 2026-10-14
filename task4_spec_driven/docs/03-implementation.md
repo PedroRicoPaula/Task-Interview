@@ -52,9 +52,11 @@ order, thread per number, and the 500 runs). The code was then restored and all
 
 ## 3. Acceptance results
 
-Checked by hand on the release APK, on an Android 15 emulator. The screenshots
-are in [`screenshots/`](screenshots/). Thread names were read from the
-operating system with `adb shell ps -T -p <app process id>`.
+Checked on the release APK, on an Android 15 emulator. Claude Code drove the
+app with `adb` and captured the screenshots, which are in
+[`screenshots/`](screenshots/). Thread names were read from the operating
+system with `adb shell ps -T -p <app process id>`. I then installed the APK and
+tested the app myself.
 
 | Criterion | Result | Evidence |
 | --- | --- | --- |
