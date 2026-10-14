@@ -33,7 +33,7 @@ meant for testing, not for publishing on Google Play.
 
 Task 1 is the development environment, set up on Windows with:
 
-- Android Studio (installed with winget)
+- Android Studio (installed with winget) with the Flutter and Dart plugins
 - Flutter 3.47.6 (stable channel) and Dart 3.13.5
 - JDK 17 (Microsoft OpenJDK)
 - Android SDK platform 36 and build-tools 36.0.0

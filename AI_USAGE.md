@@ -10,12 +10,12 @@ subtasks, and which parts Claude Code did and which parts I did.
   desktop app (Claude Opus 5) to build the apps on 8 October 2026, and in the
   VS Code extension (Claude Opus 5.5) to publish them and act on the review
   feedback.
-- **Claude Code:** set up the development environment (apart from one manual
-  step, see [Task 1](#task-1-install-android-studio-with-flutter-support)),
+- **Claude Code:** set up the development environment (apart from the Android
+  Studio plugins, see [Task 1](#task-1-install-android-studio-with-flutter-support)),
   wrote all of the code, tests and documentation, built the APKs and checked
   them on an emulator.
-- **Me:** I directed the work, decided on scope and delivery, tested every task
-  manually and reviewed the code. I can explain how it works, including the
+- **Me:** I directed the work, decided on scope and delivery, installed the
+  Android Studio plugins, tested every task manually and reviewed the code. I can explain how it works, including the
   Task 4 synchronization. I did not write or edit code by hand.
 
 ## Workflow
@@ -40,7 +40,8 @@ flowchart TB
 1. **Assess.** I gave Claude Code the four tasks and asked it to separate what
    it could do on its own from what needed me. The one set-up step it could
    not do from the command line was installing the Flutter and Dart plugins
-   inside Android Studio, which needs the IDE's interface.
+   inside Android Studio, which needs the IDE's interface. I did that step
+   myself.
 2. **Plan subtasks.** Claude Code broke the work into steps and tracked them in
    a to-do list as it worked. The plan changed once: it first meant to show the
    apps in a web browser, but Flutter Web cannot run `dart:isolate`, so it used
@@ -81,9 +82,7 @@ Each table lists the subtasks carried out for one task and who did them.
 | 1.4 | Install the Android SDK and accept its licenses | Claude Code | `sdkmanager`: platform-tools, platform 36, build-tools 36.0.0 |
 | 1.5 | Connect Flutter to the SDK and JDK, and check the set-up | Claude Code | `flutter config`, `flutter doctor` |
 | 1.6 | Create an Android emulator | Claude Code | Android 15 system image, `avdmanager` |
-
-Still to do: installing the Flutter and Dart plugins inside Android Studio. This
-step needs the IDE's interface, so Claude Code left it to me.
+| 1.7 | Install the Flutter and Dart plugins in Android Studio | Me | Android Studio's plugin manager, since this step needs the IDE's interface |
 
 ### Task 2: Hello World
 
