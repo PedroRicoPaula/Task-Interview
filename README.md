@@ -1,109 +1,95 @@
 # Interview Tasks
 
-A single Flutter app that solves the four interview tasks. The home screen lists
-the tasks and each one opens on its own screen.
+Solutions to the Flutter interview tasks. Tasks 2, 3 and 4 are three standalone
+Android apps. Each one has its own folder, its own tests and a release APK that
+is ready to install.
 
-| Task | What was asked | Where it lives |
-| ---- | -------------- | -------------- |
-| 1 | Install Android Studio with Flutter support | Flutter 3.47 stable + Android SDK 36 + JDK 17; this project builds and runs on an emulator |
-| 2 | "Hello World" app | [`lib/screens/task2_hello_world.dart`](lib/screens/task2_hello_world.dart) |
-| 3 | Label + EditText + Button; the button shows the text on the label | [`lib/screens/task3_label_edittext_button.dart`](lib/screens/task3_label_edittext_button.dart) |
-| 4 | Two synchronized threads counting odd/even numbers into one label | [`lib/counter_isolates.dart`](lib/counter_isolates.dart) (logic) + [`lib/screens/task4_sync_threads.dart`](lib/screens/task4_sync_threads.dart) (UI) |
+| Task | App | Source | APK |
+| ---- | --- | ------ | --- |
+| 1. Install Android Studio with Flutter support | - | [Environment](#environment) | - |
+| 2. Hello World | Hello World | [`task2_hello_world/`](task2_hello_world/) | [`task2_hello_world.apk`](apk/task2_hello_world.apk) |
+| 3. Label, EditText and button | UI Layout | [`task3_ui_layout/`](task3_ui_layout/) | [`task3_ui_layout.apk`](apk/task3_ui_layout.apk) |
+| 4. Two synchronized threads | Multithreading | [`task4_multithreading/`](task4_multithreading/) | [`task4_multithreading.apk`](apk/task4_multithreading.apk) |
 
-## Requirements
+## Installing the APKs
 
-- Flutter 3.47 or newer (Dart 3.13+)
-- JDK 17
+Each app has its own application ID, so the three apps can be installed side by
+side.
+
+- **On an Android phone:** download the APK from the [`apk/`](apk/) folder, open
+  it and allow installs from unknown sources when Android asks.
+- **With adb** (phone or emulator):
+
+  ```
+  adb install apk/task2_hello_world.apk
+  adb install apk/task3_ui_layout.apk
+  adb install apk/task4_multithreading.apk
+  ```
+
+The APKs are release builds signed with Flutter's default debug key. They are
+meant for testing, not for publishing on Google Play.
+
+## Environment
+
+Task 1 is the development environment, set up on Windows with:
+
+- Android Studio (installed with winget)
+- Flutter 3.47.6 (stable channel) and Dart 3.13.5
+- JDK 17 (Microsoft OpenJDK)
 - Android SDK platform 36 and build-tools 36.0.0
+- An Android emulator running Android 15 (API 35)
 
-The app targets Android only: task 4 uses `dart:isolate`, which Flutter Web does
-not support, so the `web/` folder was removed on purpose.
+The apps were built with the Flutter command-line tools and tested on that
+emulator.
 
-## Running
+## Running from source
+
+Each app is a regular Flutter project. Open its folder in Android Studio, or run
+it from a terminal:
 
 ```
+cd task2_hello_world
 flutter pub get
 flutter run
 ```
 
 ## Tests
 
-```
-flutter test
-```
+Run `flutter test` inside each app folder. There are six tests in total and all
+of them pass. `flutter analyze` reports no issues in any of the three apps.
 
-Five tests, all passing:
+| App | What the tests check |
+| --- | --- |
+| Hello World | The screen displays "Hello World". |
+| UI Layout | The button copies the text field into the label. An empty field shows a hint. |
+| Multithreading | The two isolates produce exactly 1 to 20 in order, each number from the right isolate. `stop()` interrupts the count. The screen starts idle. |
 
-- `test/widget_test.dart` - task 2 renders "Hello World"; task 3 copies the text
-  field into the label and shows a hint when the field is empty.
-- `test/counter_isolates_test.dart` - the two isolates produce exactly
-  `1, 2, 3, ... 20` in order with every odd number coming from the odd isolate
-  and every even number from the even isolate; `stop()` interrupts the count.
+## Task 4 in short
 
-`flutter analyze` reports no issues.
+Dart has no threads that share memory, so the two "threads" are two isolates.
+They synchronize by passing a single turn token back and forth. Only the isolate
+that holds the token may update the label, and then it hands the token to the
+other one. The full explanation is in the
+[Task 4 README](task4_multithreading/README.md#how-the-synchronization-works).
 
-## Task 4: how the synchronization works
-
-Dart has no threads that share mutable memory. Its concurrency model is based on
-_isolates_: each isolate owns its heap and event loop and they communicate only
-through messages (`SendPort` / `ReceivePort`). So synchronization is not done
-with `synchronized` / `wait()` / `notify()` as it would be in Java, but by
-passing a single **turn token** back and forth.
-
-Exactly one token exists, so only one isolate is ever allowed to write at a
-time, which guarantees the `1, 2, 3, 4, ...` order:
+## Repository structure
 
 ```
-odd  -> emits 1 -> hands the token over -> waits
-even -> emits 2 -> hands the token over -> waits
-odd  -> emits 3 -> ...
-```
-
-Implementation notes:
-
-- `_counterWorker` is a top-level function, as required by `Isolate.spawn`.
-- Each worker blocks on a `StreamIterator` over its own `ReceivePort`, so a
-  worker only resumes when it receives the token.
-- At startup the two workers exchange ports through a short handshake. The even
-  worker is wired first so its partner port always arrives before the first
-  token.
-- `stop()` kills both isolates; the screen calls it from `dispose()`.
-- The UI isolate never blocks: it only listens to the ticks and calls
-  `setState`.
-
-The equivalent on native Android would be two `Thread`s sharing a lock, using
-`wait()` / `notifyAll()` on a shared "whose turn is it" flag and posting the
-label update with `runOnUiThread`.
-
-## Project structure
-
-```
-lib/
-  main.dart                              home screen with the task list
-  counter_isolates.dart                  task 4 synchronization logic
-  screens/
-    task2_hello_world.dart
-    task3_label_edittext_button.dart
-    task4_sync_threads.dart
-test/
-  widget_test.dart
-  counter_isolates_test.dart
-docs/screenshots/                        screenshots of the running app
-android/                                 Android project
+apk/                    release APKs, one per app
+task2_hello_world/      Task 2: Hello World
+task3_ui_layout/        Task 3: label, text field and button
+task4_multithreading/   Task 4: two isolates counting in turns
+docs/screenshots/       screenshots of the three apps
 ```
 
 ## Screenshots
 
-Captured on an Android emulator (Pixel, API 36).
+Captured on an Android emulator running Android 15 (API 35).
 
-| Home                                 | Task 2                                             |
-| ------------------------------------ | -------------------------------------------------- |
-| ![Home](docs/screenshots/1-home.png) | ![Hello World](docs/screenshots/2-hello-world.png) |
+| Task 2 | Task 3, before | Task 3, after pressing the button |
+| ------ | -------------- | --------------------------------- |
+| ![Task 2](docs/screenshots/task2-hello-world.png) | ![Task 3 before](docs/screenshots/task3-before.png) | ![Task 3 after](docs/screenshots/task3-after.png) |
 
-| Task 3 - before                           | Task 3 - after pressing the button      |
-| ----------------------------------------- | --------------------------------------- |
-| ![Before](docs/screenshots/3a-before.png) | ![After](docs/screenshots/3b-after.png) |
-
-| Task 4 - idle                         | Task 4 - counting                             | Task 4 - finished                             |
-| ------------------------------------- | --------------------------------------------- | --------------------------------------------- |
-| ![Idle](docs/screenshots/4a-idle.png) | ![Counting](docs/screenshots/4b-counting.png) | ![Finished](docs/screenshots/4c-finished.png) |
+| Task 4, idle | Task 4, counting | Task 4, finished |
+| ------------ | ---------------- | ---------------- |
+| ![Task 4 idle](docs/screenshots/task4-idle.png) | ![Task 4 counting](docs/screenshots/task4-counting.png) | ![Task 4 finished](docs/screenshots/task4-finished.png) |
